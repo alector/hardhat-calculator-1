@@ -14,7 +14,7 @@ describe("Calculator", function () {
     it('Should set the right owner at deployment', async () => {
       await calculator.deployed()
       const owner = await ethers.getSigners();
-      expect(owner).to.equal(owner.address);
+      expect(owner).to.equal(calculator.owner.address);
     });
 
   })
