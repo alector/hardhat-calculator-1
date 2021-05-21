@@ -4,22 +4,24 @@ const { ethers } = require("hardhat");
 describe("Calculator", function () {
   let Calculator, calculator
 
-  beforeEach(async () => {
-    Calculator = await ethers.getContractFactory('Calculator');
-    calculator = await Calculator.deploy();
-  })
-
   describe('Deployment', () => {
 
     it('Should set the right owner at deployment', async () => {
+      Calculator = await ethers.getContractFactory('Calculator');
+      calculator = await Calculator.deploy();
       await calculator.deployed()
       const owner = await ethers.getSigners();
-      expect(owner).to.equal(calculator.owner.address);
+      expect(calculator.owner).to.equal(owner.address);
     });
 
   })
 
   describe('Calculation', () => {
+
+    beforeEach(async () => {
+      Calculator = await ethers.getContractFactory('Calculator');
+      calculator = await Calculator.deploy();
+    })
 
     it('Should calculate the right result : addition', async function () {
       const result = await calculator.add(10, 5);
