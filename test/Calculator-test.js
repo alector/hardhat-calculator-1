@@ -2,57 +2,37 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
 describe("Calculator", function () {
-  let Calculator, calculator
+  // sans les "this" : 
+  // let Calculator, calculator
 
-  describe('Deployment', () => {
-
-    it('Should set the right owner at deployment', async () => {
-      Calculator = await ethers.getContractFactory('Calculator');
-      calculator = await Calculator.deploy();
-      await calculator.deployed()
-      const owner = await ethers.getSigners();
-      expect(calculator.owner).to.equal(owner.address);
-    });
-
+  beforeEach(async function () {
+    this.Calculator = await ethers.getContractFactory('Calculator');
+    this.calculator = await this.Calculator.deploy();
+    await this.calculator.deployed();
   })
 
-  describe('Calculation', () => {
+  it('Should calculate the right result : addition', async function () {
+    expect(await this.calculator.add(10, 5)).to.equal(15);
+  });
 
-    beforeEach(async () => {
-      Calculator = await ethers.getContractFactory('Calculator');
-      calculator = await Calculator.deploy();
-    })
+  it('Should calculate the right result : substraction', async function () {
+    expect(await this.calculator.sub(10, 5)).to.equal(5);
+  });
 
-    it('Should calculate the right result : addition', async function () {
-      const result = await calculator.add(10, 5);
-      expect(result).to.equal(15);
-    });
+  it('Should calculate the right result : multiplication', async function () {
+    expect(await this.calculator.mul(10, 5)).to.equal(50);
+  });
 
-    it('Should calculate the right result : substraction', async function () {
-      const result = await calculator.sub(10, 5);
-      expect(result).to.equal(5);
-    });
+  it('Should calculate the right result : division', async function () {
+    expect(await this.calculator.div(10, 5)).to.equal(2);
+  });
 
-    it('Should calculate the right result : multiplication', async function () {
-      const result = await calculator.mul(10, 5);
-      expect(result).to.equal(50);
-    });
+  it('Should revert if nb2 equals 0', async function () {
+    await expect(this.calculator.div(10, 0)).to.be.revertedWith("Calculator: cannot divide by zero");
+  });
 
-    it('Should calculate the right result : division', async function () {
-      const result = await calculator.div(10, 5);
-      expect(result).to.equal(2);
-    });
-
-    it('Should revert if nb2 equals 0', async function () {
-      const result = await calculator.div(10, 0);
-      expect(result).to.be.reverted;
-    });
-
-    it('Should calculate the right result : modulo', async function () {
-      const result = await calculator.mod(10, 5);
-      expect(result).to.equal(0);
-    });
-
-  })
+  it('Should calculate the right result : modulo', async function () {
+    expect(await this.calculator.mod(10, 5)).to.equal(0);
+  });
 
 });
